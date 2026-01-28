@@ -1,0 +1,30 @@
+{
+  "name": "repo-atlas-saas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Repo Atlas SaaS - GitHub repository scanner and mapping tool",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.12.0",
+    "@octokit/rest": "^21.1.1",
+    "next": "^15.3.0",
+    "octokit": "^4.1.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.4",
+    "@types/node": "^22.12.0",
+    "@types/react": "^19.0.8",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.7.3"
+  }
+}
