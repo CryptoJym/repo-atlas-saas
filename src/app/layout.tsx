@@ -3,9 +3,19 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Repo Atlas - GitHub Repository Scanner & Mapper",
+  title: { default: "Repo Atlas", template: "%s | Repo Atlas" },
   description:
-    "Scan, analyze, and map your GitHub repositories. Get health scores, activity metrics, and dependency analysis for your entire codebase.",
+    "Scan, analyze, and map your GitHub repositories. Health scores, dependency maps, and actionable insights.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+  ),
+  openGraph: {
+    title: "Repo Atlas",
+    description: "Map your entire GitHub universe",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
+  icons: { icon: "/favicon.svg" },
 };
 
 const clerkAppearance = {
@@ -29,7 +39,15 @@ export default function RootLayout({
 }) {
   const shell = (
     <html lang="en" className="dark">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--primary)] focus:text-white focus:rounded-lg"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 

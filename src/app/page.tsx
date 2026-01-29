@@ -20,7 +20,10 @@ export default function HomePage() {
           </Link>
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="px-4 py-2 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] transition font-medium">
+              <button
+                type="button"
+                className="px-4 py-2 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] transition font-medium"
+              >
                 Sign In
               </button>
             </SignInButton>
@@ -56,7 +59,10 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="px-8 py-3 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] transition font-medium text-lg">
+                <button
+                  type="button"
+                  className="px-8 py-3 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] transition font-medium text-lg"
+                >
                   Get Started Free
                 </button>
               </SignInButton>

@@ -245,6 +245,7 @@ export function AnalysisDashboard({ repos }: Props) {
           {sortedRepos.slice(0, 20).map((repo) => (
             <button
               key={repo.id}
+              type="button"
               onClick={() => handleAnalyze(repo.owner, repo.name)}
               className={`p-4 rounded-xl border text-left transition ${
                 selectedRepo === repo.fullName

@@ -17,6 +17,7 @@ export function RepoList({ repos, scannedAt }: Props) {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [filter, setFilter] = useState<FilterKey>("all");
   const [showPrivate, setShowPrivate] = useState(true);
+  const [exportOpen, setExportOpen] = useState(false);
 
   const filtered = useMemo(() => {
     let result = [...repos];
@@ -80,6 +81,70 @@ export function RepoList({ repos, scannedAt }: Props) {
     }
   };
 
+  const handleExport = (format: "json" | "csv") => {
+    const exportRows = filtered;
+    let blob: Blob;
+
+    if (format === "json") {
+      blob = new Blob([JSON.stringify(exportRows, null, 2)], {
+        type: "application/json",
+      });
+    } else {
+      const headers = [
+        "name",
+        "fullName",
+        "language",
+        "healthScore",
+        "healthGrade",
+        "activityLevel",
+        "starCount",
+        "forkCount",
+        "isPrivate",
+        "pushedAt",
+      ];
+
+      const escapeCsv = (value: string) => {
+        if (value.includes("\"")) {
+          value = value.replace(/\"/g, "\"\"");
+        }
+        return value.includes(",") || value.includes("\n") || value.includes("\"")
+          ? `"${value}"`
+          : value;
+      };
+
+      const csvRows = [
+        headers.join(","),
+        ...exportRows.map((repo) => {
+          const row = [
+            repo.name,
+            repo.fullName,
+            repo.language || "",
+            String(repo.healthScore),
+            repo.healthGrade,
+            repo.activityLevel,
+            String(repo.starCount),
+            String(repo.forkCount),
+            String(repo.isPrivate),
+            repo.pushedAt || "",
+          ];
+          return row.map((value) => escapeCsv(String(value))).join(",");
+        }),
+      ];
+
+      blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    }
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `repo-atlas-export.${format === "json" ? "json" : "csv"}`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setExportOpen(false);
+  };
+
   const gradeColors: Record<string, string> = {
     A: "bg-green-500/20 text-green-400 border-green-500/30",
     B: "bg-blue-500/20 text-blue-400 border-blue-500/30",
@@ -109,17 +174,55 @@ export function RepoList({ repos, scannedAt }: Props) {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search repos, languages, topics..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="px-4 py-2 rounded-lg bg-[var(--card)] border border-[var(--border)] text-white placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--primary)] w-72"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search repos, languages, topics..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="px-4 py-2 rounded-lg bg-[var(--card)] border border-[var(--border)] text-white placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--primary)] w-72"
+          />
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setExportOpen((prev) => !prev)}
+              className="px-3 py-2 rounded-lg border border-[var(--border)] text-sm text-white hover:bg-[var(--card-hover)] transition"
+              aria-haspopup="menu"
+              aria-expanded={exportOpen}
+              aria-label="Export repositories"
+            >
+              Export
+            </button>
+            {exportOpen && (
+              <div
+                className="absolute right-0 mt-2 w-44 rounded-lg border border-[var(--border)] bg-[var(--card)] shadow-lg z-10"
+                role="menu"
+              >
+                <button
+                  type="button"
+                  onClick={() => handleExport("json")}
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--card-hover)] transition"
+                  role="menuitem"
+                >
+                  Export as JSON
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleExport("csv")}
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--card-hover)] transition"
+                  role="menuitem"
+                >
+                  Export as CSV
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
         <div className="flex items-center gap-1 rounded-lg border border-[var(--border)] p-1">
           {(["all", "active", "moderate", "stale", "dormant"] as FilterKey[]).map((f) => (
             <button
               key={f}
+              type="button"
               onClick={() => setFilter(f)}
               className={`px-3 py-1 rounded text-sm capitalize transition ${
                 filter === f
@@ -156,6 +259,7 @@ export function RepoList({ repos, scannedAt }: Props) {
         ).map(([key, label]) => (
           <button
             key={key}
+            type="button"
             onClick={() => toggleSort(key)}
             className={`px-3 py-1 rounded-lg transition ${
               sortBy === key
