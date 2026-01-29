@@ -1,7 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { getScanner } from "@/lib/github";
 import { AnalysisDashboard } from "@/components/analysis-dashboard";
+import { getScanner } from "@/lib/github";
+import { getCachedScan, getOrCreateUser, saveScanResult } from "@/lib/scan-cache";
 
 export const dynamic = "force-dynamic";
 
@@ -22,10 +23,31 @@ export default async function AnalysisPage() {
   }
 
   let scanResult = null;
+  let supabaseUserId: string | null = null;
+
   try {
-    scanResult = await scanner.scanUserRepos();
+    supabaseUserId = await getOrCreateUser(userId);
   } catch (error) {
-    console.error("Analysis scan error:", error);
+    console.error("Supabase user sync error:", error);
+  }
+
+  if (supabaseUserId) {
+    try {
+      scanResult = await getCachedScan(supabaseUserId);
+    } catch (error) {
+      console.error("Supabase scan cache error:", error);
+    }
+  }
+
+  if (!scanResult) {
+    try {
+      scanResult = await scanner.scanUserRepos();
+      if (scanResult && supabaseUserId) {
+        await saveScanResult(supabaseUserId, scanResult);
+      }
+    } catch (error) {
+      console.error("Analysis scan error:", error);
+    }
   }
 
   return <AnalysisDashboard repos={scanResult?.repos || []} />;

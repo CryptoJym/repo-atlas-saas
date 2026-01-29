@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { PricingTable } from "@clerk/nextjs";
 
 export const dynamic = "force-dynamic";
 
@@ -42,10 +41,95 @@ export default function PricingPage() {
           </p>
         </div>
 
-        {/* Clerk PricingTable - plans configured in Clerk Dashboard */}
+        {/* Pricing cards for signed-in users */}
         <SignedIn>
-          <div className="max-w-4xl mx-auto">
-            <PricingTable />
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {/* Free */}
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-8">
+              <h3 className="text-lg font-semibold mb-2">Free</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">$0</span>
+                <span className="text-[var(--muted)]">/mo</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Scan up to 10 repos
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Basic health scores
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Public repos only
+                </li>
+              </ul>
+              <button
+                className="w-full py-2 rounded-lg border border-[var(--border)] text-[var(--muted)] cursor-default"
+                disabled
+              >
+                Current Plan
+              </button>
+            </div>
+
+            {/* Dev - $15/mo */}
+            <div className="rounded-xl border-2 border-[var(--primary)] bg-[var(--card)] p-8 relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[var(--primary)] rounded-full text-xs font-bold">
+                POPULAR
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Developer</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">$15</span>
+                <span className="text-[var(--muted)]">/mo</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Unlimited repo scans
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Private repos
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Advanced health scoring
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Dependency analysis
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Export reports
+                </li>
+              </ul>
+              <button className="w-full py-2 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] transition font-medium">
+                Upgrade
+              </button>
+            </div>
+
+            {/* Team - $49/mo */}
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-8">
+              <h3 className="text-lg font-semibold mb-2">Team</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">$49</span>
+                <span className="text-[var(--muted)]">/mo</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Everything in Developer
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Organization scanning
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Team activity reports
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> API access
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[var(--success)]">✓</span> Priority support
+                </li>
+              </ul>
+              <button className="w-full py-2 rounded-lg border border-[var(--border)] hover:border-[var(--muted)] transition font-medium">
+                Upgrade
+              </button>
+            </div>
           </div>
         </SignedIn>
 
