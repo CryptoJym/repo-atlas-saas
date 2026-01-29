@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { getScanner } from "@/lib/github";
 import { RepoList } from "@/components/repo-list";
 
+export const dynamic = "force-dynamic";
+
 export default async function ReposPage() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { PricingTable } from "@clerk/nextjs";
 
+export const dynamic = "force-dynamic";
+
 export default function PricingPage() {
   return (
     <div className="min-h-screen bg-[var(--background)]">

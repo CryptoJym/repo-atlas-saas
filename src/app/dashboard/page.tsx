@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { getScanner } from "@/lib/github";
 import { DashboardOverview } from "@/components/dashboard-overview";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
